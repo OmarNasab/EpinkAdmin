@@ -1,0 +1,3 @@
+.sidenav-light .sidenav-menu .nav-link:hover {
+    color: #0061f2;
+}

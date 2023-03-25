@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Video Call</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/connectycube@3.12.0/dist/connectycube.min.js"></script>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+		<style>
+		html, body {
+		  width: 100%; 
+		  height:100%; 
+		  overflow:hidden;
+		}
+
+		#remoteOpponentVideoElementId{
+		  position: absolute;
+		  top: 50%; 
+		  left: 50%;
+		  -webkit-transform: translateX(-50%) translateY(-50%);
+		  transform: translateX(-50%) translateY(-50%);
+		  min-width: 100%; 
+		  min-height: 100%; 
+		  width: auto; 
+		  height: auto;
+		  z-index: -1000; 
+		  overflow: hidden;
+		}
+		#myVideoElementId{
+		position: absolute;
+			top: 20%;
+			left: 30%;
+			/* bottom: 10%; */
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+			/* min-width: 100%; */
+			/* min-height: 100%; */
+			width: 150px;
+			height: auto;
+			/* z-index: 0; */
+			overflow: hidden;
+		}
+		#login{
+		position: absolute;
+			top: 50%;
+			left: 50%;
+			/* bottom: 10%; */
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+			/* min-width: 100%; */
+			/* min-height: 100%; */
+			width: 200px;
+			height: auto;
+			/* z-index: 0; */
+			overflow: hidden;
+		}
+		#disconnect{
+			position: absolute;
+			bottom: 10%;
+			left: 50%;
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+			/* min-width: 100%; */
+			/* min-height: 100%; */
+			width: 200px;
+			height: auto;
+			/* z-index: 0; */
+			overflow: hidden;
+			display: none
+		}
+		body{
+			//background-color: black;
+		}
+		</style>
+	</head>
+	<body onload="initApp()">
+	
+	</body>
+		<div id="login"  style="display: none">
+		<center>
+			<br>
+			<input type="text" id="username" class="form-control">
+			<br>
+			<input type="password" id="password" class="form-control">
+			<br>
+			<button onclick="setLogindata()" class="btn btn-primary">LOGIN</button>
+		</center>
+		</div>
+		<div id="dashboard" style="display: none">
+			<a id="logoutbutton" href="#!" onclick="logOut()"><i class="fas fa-sign-out-alt white-text"></i></a>
+			<p>Make Calls</p>
+			 <a id="" href="makecall.html" ><i class="fas fa-phone white-text"></i></a>
+			 <div id="constate">
+				
+			</div>
+			<video id="myVideoElementId" width="100px">
+			
+			</video>
+			
+			
+			<video id="remoteOpponentVideoElementId" width="100px">
+				
+			</video>
+			
+
+			<div id="actions" style="display: none">
+				
+			
+
+		</div>
+			<div class="row" id="disconnect">
+				<div class="col-sm">
+				  <a id="logoutbutton" href="#!" onclick="logOut()"><i class="fas fa-sign-out-alt white-text text-white"></i></a>
+				</div>
+				<div class="col-sm">
+				  <a id="endcallbutton" href="#!" id="" onclick="endCall()"><i class="fas fa-phone white-text text-white"></i></a>
+				</div>
+
+			 </div>
+	</body>
+	<script>
+
+	var tocall;
+	var doctoruid = 4484713;
+	var patientuid = 4483638;
+	var session;
+	function endCall(){
+		location.reload();
+	}
+	function logOut(){
+		localStorage.clear();
+		location.reload();
+	}
+	const CREDENTIALS = {
+	  appId: 5070,
+	  authKey: "JNXS9GRyMGNsUgc",
+	  authSecret: "ctzmyKZecd26cJd",
+	};
+	function setLogindata(){
+		var userName = document.getElementById("username").value;
+		var userPassword = document.getElementById("password").value;
+		
+		if(userName == "patient"){
+			var params = { login:userName, password: userPassword, opponentid: patientuid };
+		}else{
+			var params = { login:userName, password: userPassword, opponentid: doctoruid };
+		}
+	
+		var prelogin = JSON.stringify(params);
+		localStorage.setItem("cblogin", prelogin);
+		location.reload();
+	}
+	ConnectyCube.init(CREDENTIALS);
+	function initApp(){
+	
+		var loginas = JSON.parse(localStorage.getItem("cblogin"));
+		console.log(loginas);
+		if(loginas == null){
+			document.getElementById("login").style.display = "block";
+			document.getElementById("dashboard").style.display = "none";
+		}else{
+			document.getElementById("login").style.display = "none";
+			document.getElementById("dashboard").style.display = "block";
+			tocall = loginas.opponentid;
+			if(loginas.login == "doctor"){
+				ConnectyCube.createSession().then((session) => {
+					const userCredentials = { login: loginas.login, password: loginas.password };
+					ConnectyCube.login(userCredentials)
+					  .then((user) => {
+					console.log(user.id);
+					  const userCredentials = {
+						  userId: user.id,
+						  password: "password",
+						};
+						ConnectyCube.chat
+						  .connect(userCredentials)
+						  .then(() => {
+							console.log("userisconnected");
+							const isConnected = ConnectyCube.chat.isConnected;
+	
+							  
+						  })
+						  .catch((error) => {});
+					  
+					  })
+					  .catch((error) => {});
+				})
+				.catch((error) => {
+				
+				});
+				
+			}else{
+				ConnectyCube.createSession()
+				.then((session) => {
+					const userCredentials = { login: loginas.login, password: loginas.password };
+					ConnectyCube.login(userCredentials)
+					  .then((user) => {
+					  const userCredentials = {
+						   userId: user.id,
+						  password: "password",
+						};
+
+						ConnectyCube.chat
+						  .connect(userCredentials)
+						  .then(() => {
+							const calleesIds = [tocall]; // User's ids
+							const sessionType = ConnectyCube.videochat.CallType.VIDEO; // AUDIO is also possible
+							const additionalOptions = {};
+							session = ConnectyCube.videochat.createNewSession(calleesIds, sessionType, additionalOptions);
+						/*	const mediaParams = {
+							  audio: true,
+							  video: true,
+							  options: {
+								muted: true,
+								mirror: true,
+							  },
+							};
+
+							session
+							  .getUserMedia(mediaParams)
+							  .then((localStream) => {
+								session.attachMediaStream("myVideoElementId", localStream);
+							  })
+							  .catch((error) => {});
+							  
+							 */
+							  
+							 
+						  }).catch((error) => {
+						  
+						  });
+					  
+					  })
+					  .catch((error) => {});
+				
+				})
+				.catch((error) => {});
+			
+			}
+	
+	}
+}
+
+ConnectyCube.videochat.onAcceptCallListener = function (session, userId, extension) {
+
+	document.getElementById("constate").innerHTML = 'Call accepted';
+};
+ConnectyCube.videochat.onRemoteStreamListener = function (session, userID, remoteStream) {
+  
+  session.attachMediaStream("remoteOpponentVideoElementId", remoteStream);
+  document.getElementById("disconnect").style.display = "block";
+  
+};
+ConnectyCube.videochat.onCallListener = function (session, extension) {
+
+								document.getElementById("constate").innerHTML = 'Someone is calling you<a href="acceptccall.html">ACCEPT CALL</a>';
+								document.getElementById("constate").innerHTML += '<a href="ec.html">REJECT CALL</a>';
+
+	
+
+	
+
+};
+ConnectyCube.videochat.onUserNotAnswerListener = function (session, userId) {
+	document.getElementById("constate").innerHTML = 'Call not answered or has been rejected by user';
+	 document.getElementById("disconnect").style.display = "block";
+};
+
+
+
+
+	
+	</script>
+</html>

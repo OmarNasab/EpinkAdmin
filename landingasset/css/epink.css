@@ -1,0 +1,376 @@
+.goog-te-banner-frame {
+    display:none !important;
+	margin-top: -50px
+}
+.hiwbox{
+	border: 1px solid #f53b57;
+    border-radius: 5px;
+    padding: 10px;
+	
+}
+.img-container {
+  position: relative;
+ 
+}
+
+.img-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: white;
+  background-color: black;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .5s ease;
+}
+
+.img-container:hover .img-overlay {
+  height: 100%;
+}
+
+
+.noborder:focus{
+    outline: none;
+}
+
+.epink-bg-primary{
+	background-color: #f53b57 !important;
+}
+.formbgcolor{
+	background-color: #fff5fa;
+}
+.skiptranslate {
+    display:none !important
+}
+.bgsecondary{ 
+	background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://epink.health/img/2-consult-with-healthcare-personnel.png");
+	height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+.accordion-button:not(.collapsed) {
+  color: #FFF  !important;
+  background-color: #F17CB1 !important;
+}
+
+
+
+.accordion-button:link, .accordion-button:visited, .accordion-button:active  {
+  background-color: #F17CB1 !important;
+    color:#FFF !important;
+    text-decoration: none !important;
+     border: hidden !important;
+       border-color: #FFF !important;
+    box-shadow: 0px !important;
+
+      
+}
+.accordion-button:hover{
+	 background-color: #F17CB1 !important;
+    color:#FFF !important;
+}
+
+.accordion-button:focus {
+  z-index: 3;
+  border-color: #FFF !important;
+  outline: 0;
+  box-shadow: 0 0 0 .25rem #FFF !important;
+}
+.epinkbglight{
+	background-color: #ffecf5;
+}
+
+.epink-coding-color{
+	background-color: #F17CB1 !important;
+}
+.section-title h2 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    color: #000;
+    letter-spacing: 0.3px;
+    padding: 0;
+}
+.section-title::after {
+    content: "";
+    height: 3px;
+    background: #fbb900;
+    width: 80px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+/****************/
+/*	 BX-SLIDER 	*/
+/****************/
+section.client {
+	padding:4em 0em;
+	
+
+}
+section.client .section-title {
+	margin-bottom: 6em;
+	
+}
+.bx-controls {
+	position: relative;
+}
+.bx-wrapper .bx-pager {
+    text-align: center;
+    padding-top: 30px;
+	max-width: 100%;
+}
+.bx-wrapper .bx-pager .bx-pager-item, .bx-wrapper .bx-controls-auto .bx-controls-auto-item {
+    display: none;
+    *zoom: 1;
+    *display: inline;
+}
+.bx-wrapper .bx-pager.bx-default-pager a {
+    background: #666;
+    text-indent: -9999px;
+    display: block;
+    width: 100%;
+    height: 10px;
+    margin: 0 5px;
+    outline: 0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+
+* {box-sizing:border-box}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 100%;
+  position: relative;
+  margin: auto;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+	display: none;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+	display: none;
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+	display: none;
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  display: none;
+  color: #f2f2f2;
+text-shadow: 0px 0px 2px rgba(150, 150, 150, 1);
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 45%;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+	display: none;
+	color: #ffffff;
+    font-size: 12px;
+    padding: 30px 12px;
+    position: absolute;
+    top: 0;
+    left: 39%;
+    text-shadow: 0px 0px 9px rgb(150 150 150);
+    font-size: 50px;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fadex {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+.epinkslidecontent{
+	position: relative;
+    z-index: 1000000;
+}
+
+.hero-image {
+  /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://via.placeholder.com/1920x1080");
+
+  /* Set a specific height */
+  height: 100%;
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+
+.testbgimage{
+	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://epink.health/epinkslide1.png");
+	height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+
+.testbgimage2{
+	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://epink.health/epinkslide2.png");
+	 height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+.testbgimage3{
+	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://epink.health/epinkslide3.png");
+	height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+.testbgimage4{
+	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://epink.health/epinkslide4.png");
+	height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+.testbgimage5{
+	background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://epink.health/spinkslide5.png");
+	height: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+
+.partner-text{
+	font-size: 19px;
+	font-weight: bolder;
+}
+.epink-primary-bg{
+	background-color: #f53b57 !important;
+}
+.epink-bg-gradient-primary-to-secondary {
+    background-color: #f53b57 !important;
+    background-image: linear-gradient( 
+135deg, #f53b57 0%, rgb(227 0 89) 100%) !important;
+}
+.epink-page-header-ui-dark {
+    color: #fff;
+    background-color: #212832;
+}
+.epink-btn-primary {
+    color: #fff;
+    background-color: #f53b57;
+    border-color: #f53b57;
+}
+
+.epink-text-primary {
+    color: #f53b57 !important;
+}
+
+.epinka:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.small{
+	font-size: 10px !important;
+}
+
+.epink-btn-primary {
+    color: #fff;
+    background-color: #f53b57;
+    border-color: #f53b57;
+}
+
+.epink-dropdown-item:hover, .dropdown-item:focus {
+    background-color: #fb5e4a47 !important;
+}
+
+.epink-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212832;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+
+.epink-icon-stack{
+	 background-color: transparent !important;
+}
+

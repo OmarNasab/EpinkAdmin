@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+  font-size: 17px;
+  background-color: black;
+}
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%; 
+  min-height: 100%;
+}
+
+.content {
+  position: fixed;
+  bottom: 0;
+
+  width: 100%;
+  padding: 20px;
+}
+.face {
+  position: fixed;
+  top: 0;
+  //background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  
+}
+
+#myBtn {
+  width: 200px;
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+}
+
+#myBtn:hover {
+  background: #ddd;
+  color: black;
+}
+</style>
+</head>
+<body onload="start()">
+<img src="" id="takenphoto" style="object-fit: cover;
+    height: 100vh;
+    display: none;
+    width: 100vw;">
+<video autoplay id="video" style="object-fit: cover;
+    height: 100vh;
+    display: block;
+    width: 100vw;
+}">
+
+</video>
+<div id="facetracker" class="face">
+	<img src="https://epink.tech/files/61d7e30cd48bc2688f3b069727188627e49ed023d9979.png" width="100%">
+</div>
+<div class="content">
+<center>
+	  <button id="start-camera" style="display: none">Start Camera</button>
+	<button id="start-record"  style="display: none">Start Recording</button>
+	<a href="#!" id="take-photo"  ><img src="https://epink.tech/files/61d7f26240c5b8ac77b79fcc6660f1a3fe9707f3646d9.png" width="50px"></a>
+	<a href="#!" id="retry" onclick="location.reload()"  style="display: none"><img src="https://epink.tech/files/61d7f271c0833b42fa4662cd4fc11a9024a741b149137.png" width="50px"></a>
+	<a href="#!" id="upload" onclick="location.reload()"  style="display: none"><img src="https://epink.tech/files/61d7f3ba39b23dbcdf5db57a6c9dec8adf0b26c530c32.png" width="50px"></a>
+
+	<button id="stop-record"  style="display: none">Stop Recording</button>
+	<a id="download-video" download="test.webm"  style="display: none">Download Video</a>
+	<center>
+		
+</div>
+
+<script>
+var imageCapture;
+let camera_button = document.querySelector("#start-camera");
+let video = document.querySelector("#video");
+let start_button = document.querySelector("#start-record");
+let stop_button = document.querySelector("#stop-record");
+let take_photo_button = document.querySelector("#take-photo");
+let download_link = document.querySelector("#download-video");
+
+let camera_stream = null;
+let media_recorder = null;
+let blobs_recorded = [];
+
+camera_button.addEventListener('click', async function() {
+   	try {
+    	camera_stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    }
+    catch(error) {
+    	alert(error.message);
+    	return;
+    }
+    video.srcObject = camera_stream;
+	const track = camera_stream.getVideoTracks()[0];
+    imageCapture = new ImageCapture(track);
+    camera_button.style.display = 'none';
+    video.style.display = 'block';
+    start_button.style.display = 'none';
+	stop_button.style.display = 'none';
+	download_link.style.display = 'none';
+});
+
+
+function startCamera() {
+ 
+
+}
+start_button.addEventListener('click', function() {
+    media_recorder = new MediaRecorder(camera_stream, { mimeType: 'video/webm' });
+
+    media_recorder.addEventListener('dataavailable', function(e) {
+    	blobs_recorded.push(e.data);
+    });
+
+    media_recorder.addEventListener('stop', function() {
+    	let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+    	download_link.href = video_local;
+
+        stop_button.style.display = 'none';
+        download_link.style.display = 'block';
+    });
+
+    media_recorder.start(1000);
+
+    start_button.style.display = 'none';
+    stop_button.style.display = 'none';
+});
+
+take_photo_button.addEventListener('click', function() {
+  imageCapture.takePhoto().then(blob => { 
+		var reader = new FileReader();
+		reader.readAsDataURL(blob); 
+		reader.onloadend = function() {
+		  var base64data = reader.result;                
+		  console.log(base64data);
+		  document.getElementById("video").style.display = "none";
+		  document.getElementById("facetracker").style.display = "none";
+		  document.getElementById("take-photo").style.display = "none";
+		  document.getElementById("takenphoto").src = base64data;
+		  document.getElementById("takenphoto").style.display = "block";
+		  document.getElementById("retry").style.display = "block";
+		  document.getElementById("upload").style.display = "block";
+		} } )
+});
+
+
+stop_button.addEventListener('click', function() {
+	media_recorder.stop(); 
+});
+function start(){
+	document.getElementById("start-camera").click();
+
+}
+
+
+</script>
+
+</body>
+</html>

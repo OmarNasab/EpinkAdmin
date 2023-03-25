@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FROM</title>
+<style>
+	.xeo{
+		border: 1px solid pink;
+		border-radius: pink;
+	}
+</style>
+</head>
+<body>
+<form id="" method="POST" onsubmit="insertToarray(event)" >
+
+<p>Table Name</p>
+<input type="text" id="tablename"><br>
+<p>Table Row</p>
+<input type="text" id="table"><br>
+<button type="submit">ADD</button>
+</form>
+<div id="arraycontroller">
+
+
+</div>
+<p>Form </p>
+<p>Table Name</p>
+<textarea id="xde" col="100" rows="25" width="100vw" style="width: 100%; max-width: 100%;">
+
+</textarea>
+<p>Data Base </p>
+<textarea id="sqlcode" col="100" rows="25" width="100vw" style="width: 100%; max-width: 100%;">
+
+</textarea>
+<p>Php Insert Code </p>
+<textarea id="phpcode" col="100" rows="25" width="100vw" style="width: 100%; max-width: 100%;">
+
+</textarea>
+<script>
+	var forms = [];
+	function insertToarray(event){
+		event.preventDefault();
+		var toAdd = document.getElementById("table").value;
+		forms.push(toAdd);
+		console.log(forms);
+		if (!forms.includes(toAdd)) {
+			forms.push(toAdd);
+		}else{
+			//alert('The term "'+toAdd+'" already exist');
+		}
+		renderArray();
+	}
+	
+	function renderArray(){
+		document.getElementById("arraycontroller").innerHTML = '';
+		var tablename = document.getElementById("tablename").value;
+		document.getElementById("xde").value = '<div class="container">\n    <?php \n    if(isset($response)){\n         echo $response; \n    } \n    ?>\n    <form method="POST">\n';
+		//document.getElementById("phpcode").value = '<?php ';
+		document.getElementById("sqlcode").value = 'CREATE TABLE '+tablename+' (\n    id int NOT NULL AUTO_INCREMENT,\n';
+		var totalArrat = forms.length;
+		var currentArrat = 1;
+		var variabletoInsert = '';
+		var variablevalue = '';
+		var variableCodevalue = '';
+		document.getElementById("phpcode").value = '';
+		for (let i = 0; i < forms.length; i++){
+			document.getElementById("arraycontroller").innerHTML += '<span class="xeo">'+forms[i]+' <a href="#!" onclick="deleteArray('+i+')">Delete</a></span> ';
+			var codename = forms[i].replaceAll(' ', '_');
+			var codename = forms[i].replaceAll('/', '_');
+			var codename = codename.toLowerCase();
+			document.getElementById("xde").value += '        <div class="form-group">\n            <label>'+forms[i]+'</label>\n            <input type="text" class="form-control" id="'+codename+'" name="'+codename+'">\n        </div>\n';
+			document.getElementById("sqlcode").value += '    '+codename+' TEXT, \n';
+			variabletoInsert += '        $'+codename+' = cleanInput($_POST["'+codename+'"]);\n';
+			if(totalArrat >  currentArrat){
+				variablevalue += ''+codename+', ';
+				variableCodevalue += '\'$'+codename+'\', ';
+				currentArrat++;
+			}else{
+				variablevalue += ''+codename+'';
+					variableCodevalue += '\'$'+codename+'\'';
+			}
+		}
+		document.getElementById("xde").value += '        <button type="submit" name="form-submit">Submit</button>\n    </form>\n</div>';
+		document.getElementById("sqlcode").value += '    PRIMARY KEY (id) \n);';
+		document.getElementById("phpcode").value += '<?php \n    if(isset($_POST["form-submit"])){\n';
+		document.getElementById("phpcode").value += ''+variabletoInsert;
+		document.getElementById("phpcode").value += '\n        $sql = "INSERT INTO '+tablename+' ';
+		document.getElementById("phpcode").value += '('+variablevalue+')';
+		document.getElementById("phpcode").value += ' VALUES ('+variableCodevalue+')";';
+		document.getElementById("phpcode").value += '\n        \n        if ($db->query($sql) === TRUE) {\n            $response = "Your submission has been submitted successfully"; \n        }else{\n            $response = "Error: " . $sql . "<br>" . $db->error; \n    	}';
+		document.getElementById("phpcode").value += '\n    } \n?>';
+		
+	}
+	
+	function deleteArray(id){
+		forms.splice(id, 1);
+		console.log(forms);
+		renderArray();
+	}
+	
+	
+	
+</script>
+
+
+
+</body>
+</html>

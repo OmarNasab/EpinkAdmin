@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Video Call</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script src="https://unpkg.com/quickblox@2.13.0/quickblox.min.js"></script>
+	</head>
+	<body onload="initApp()">
+		<nav class="navbar navbar-expand-md bg-light navbar-light">
+			<a class="navbar-brand" href="#">EPINK</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" href="#!" onclick="openDashboard()">Dashboard</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#!" onclick="opensearchUser()">Search User</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#!" onclick="logout()">Logout</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<br>
+		<div id="logintype" class="container" style="display: none">
+			<p>Select Login Type</p>
+			<button id="l1" onclick="loginAs(1)" disabled class="btn btn-primary">Login As Patient</button>
+			<button id="l2" onclick="loginAs(0)" disabled class="btn btn-primary">Login As Doctor</button>
+		</div>
+		<div class="container" id="loginform" style="display: none">
+			<form onsubmit="loginUser(this)">
+				<div class="form-group">
+					<label>Username</label>
+					<input type="text" id="login" name="login" class="form-control" value="tester">
+				</div>
+				<div class="form-group">
+					<label>Password</label>
+					<input type="text" id="password" name="password" class="form-control" value="password">
+				</div>
+				<button class="btn btn-primary" type="submit">LOGIN</button> <a href="#!" class="btn btn-primary" onclick="registerUser()">REGISTER</a>
+			</form>
+		</div>
+		<div class="container" id="dashboard" style="display: none">
+			<p id="">Welcome back <span id="loggedinusername"></span> (<span id="loggedinuserid"></span>)</p>
+			<div id="usercall"></div>
+			<button class="btn btn-primary" onclick="videoCall(tocall)">Call user</button>
+			<p id="video1">V1</p>
+			<video id="remoteOpponentVideoElementId" width="100%" preload="none"></video>
+			<p id="video1" width='100%' >V2</p>
+			<video id="localVideoElem" preload="none" width="100%"></video>
+			<video id="myVideoElementId" preload="none" width="100%"></video>
+		</div>
+		<div id="searchuser" class="container" style="display: none">
+			<input type="text" onkeyup="searchUser(this)" class="form-control">
+			<div id="searchresult">
+			</div>
+			
+		</div>
+		<script src="vc.js"></script>
+	</body>
+</html>
