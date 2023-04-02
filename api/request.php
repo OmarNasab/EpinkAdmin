@@ -4866,12 +4866,12 @@ if (isset($_POST["topUpHistory"])) {
     $sql = "SELECT * FROM senangpay WHERE user_id= 29";
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
-        $row=$result->fetch_all(MYSQLI_ASSOC);
+        $row = $result->fetch_all(MYSQLI_ASSOC);
         $data["data"] = $row;
         $data["status"] = "success";
-    }else{
-        $data["message"]="No History found";
-        $data["status"]="Fail";
+    } else {
+        $data["message"] = "No History found";
+        $data["status"] = "Fail";
     }
 
 }
@@ -7230,4 +7230,45 @@ if (isset($_POST["readnotification"])) {
         echo $ownerid;
     }
 }
+
+if (isset($_POST["topUpDetails"])) {
+    $topUpID = $_POST["topUpID"];
+    $sql = "SELECT * FROM senangpay WHERE id='$topUpID'";
+    $result = $db->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $data = $row;
+    } else {
+        $data["status"] = "fail";
+        $data["message"] = "No TopUp";
+    }
+}
+
+if (isset($_POST["transactionDetails"])) {
+    $transactionID = $_POST["transactionID"];
+    $sql = "SELECT * FROM transaction_history WHERE id='$transactionID'";
+    $result = $db->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $row["from_user"]=getUserFullName($db,$row["from_user"]);
+        $row["to_user"]=getUserFullName($db,$row["to_user"]);
+        $data = $row;
+    } else {
+        $data["status"] = "fail";
+        $data["message"] = "No Transaction";
+    }
+}
+
+function getUserFullName($db,$id)
+{
+    $sql = "SELECT fullname FROM users WHERE id='$id'";
+    $result = $db->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row["fullname"];
+    }
+    return "";
+
+}
+
 ?>
