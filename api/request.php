@@ -905,25 +905,25 @@ if (isset($_POST["acceptthistelecare"])) {
         $row = $careresult->fetch_assoc();
         $owner = $row["requesterid"];
         $chatwith = $authUser["id"];
-        $price = '1.00';
+        $price = $row["careprice"];
         $sickness = $row["patientproblem"];
         $datetiembook = $row["caredate"];
         $bookingtype = "both";
-        $sql = "SELECT * FROM chats WHERE owner_one='$owner' AND owner_two='$chatwith' AND active='true' AND archive='' OR owner_one='$chatwith' AND owner_two='$owner' AND active='true' AND AND archive=''";
+        $sql = "SELECT * FROM chats WHERE owner_one='$owner' AND owner_two='$chatwith' AND active='true' AND archive='' OR owner_one='$chatwith' AND owner_two='$owner' AND active='true' AND  archive=''";
         $result = $db->query($sql);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $data["status"] = "Successfull";
             $data["chat_id"] = $row["id"];
         } else {
-            $sql = "INSERT INTO chats (owner_one, owner_two, active, session_reason, session_date, session_status, type, doctor)
-			VALUES ('$owner', '$chatwith', 'true', '$sickness', '$datetiembook', 'new', '$bookingtype', 'true')";
+            $sql = "INSERT INTO chats (owner_one, owner_two, active, session_reason, session_date, session_status, type, doctor, diagnose)
+			VALUES ('$owner', '$chatwith', 'true', '$sickness', '$datetiembook', 'new', '$bookingtype', 'true', 'Yet')";
             if ($db->query($sql) === TRUE) {
                 $last_id = $db->insert_id;
 
                 $sqlcharge = "UPDATE users SET wallet=wallet-$price WHERE id='$owner'";
                 $db->query($sqlcharge);
-                $sqlgive = "UPDATE users SET wallet=wallet+$price WHERE id='$chatwith'";
+                $sqlgive = "UPDATE users SET wallet=wallet+$price*0.7 WHERE id='$chatwith'";
                 $db->query($sqlgive);
                 $chatdate = date("Y-m-d H:i:s");
                 $reason = 'Patient have started a chat session. Reason: ' . $sickness;
@@ -2463,7 +2463,7 @@ if (isset($_POST["universalviewallcare"])) {
             } else {
                 $row["expired"] = false;
             }
-            $row["price"] = 120.00;
+            $row["price"] = (int)$row["careprice"]*0.7 ;
             $timestamp = $row["caredate"] . " " . $row["caretime"];
             $row["timestamp"] = $timestamp;
             $row["timer"] = date("g:i a F jS, Y ", strtotime($timestamp));
@@ -2500,7 +2500,7 @@ if (isset($_POST["universalviewallcare"])) {
             } else {
                 $row["expired"] = false;
             }
-            $row["price"] = 120.00;
+            $row["price"] = (int)$row["careprice"]*0.7 ;
             $timestamp = $row["caredate"] . " " . $row["caretime"];
             $row["timestamp"] = $timestamp;
             $row["timer"] = date("g:i a F jS, Y ", strtotime($timestamp));
@@ -2605,17 +2605,24 @@ if (isset($_POST["inserttocare"])) {
     $doc_id = 0;
     $caretype = cleanInput($_POST["caretype"]);
     $caretypeori = cleanInput($_POST["caretypeori"]);
-    if ($caretypeori == "House Call") {
-        $ecare_servicessql = "SELECT * FROM ecare_services WHERE id='$careid'";
-        $ecare_servicesresult = $db->query($ecare_servicessql);
-        $ecare_servicesdata = $ecare_servicesresult->fetch_assoc();
-        $careprice = $ecare_servicesdata["price"];
-    } else {
-        $ecare_servicessql = "SELECT * FROM ecare_services WHERE id='$careid'";
-        $ecare_servicesresult = $db->query($ecare_servicessql);
-        $ecare_servicesdata = $ecare_servicesresult->fetch_assoc();
-        $careprice = $ecare_servicesdata["walkinprice"];
+    if($caretype != "Custom Consultation"){
+        if ($caretypeori == "House Call") {
+            $ecare_servicessql = "SELECT * FROM ecare_services WHERE id='$careid'";
+            $ecare_servicesresult = $db->query($ecare_servicessql);
+            $ecare_servicesdata = $ecare_servicesresult->fetch_assoc();
+            $careprice = $ecare_servicesdata["price"];
+        } else {
+            $ecare_servicessql = "SELECT * FROM ecare_services WHERE id='$careid'";
+            $ecare_servicesresult = $db->query($ecare_servicessql);
+            $ecare_servicesdata = $ecare_servicesresult->fetch_assoc();
+            $careprice = $ecare_servicesdata["walkinprice"];
+        }
+        $require_attachment = cleanInput($_POST["require_attachment"]);
+    }else{
+        $careprice = 120;
+        $require_attachment = "none";
     }
+
     $fullname = cleanInput($_POST["fullname"]);
     $noic = cleanInput($_POST["noic"]);
     $knownillness = cleanInput($_POST["knownillness"]);
@@ -2624,7 +2631,6 @@ if (isset($_POST["inserttocare"])) {
 
         if ($caretype != "Custom Consultation") {
             $packagedata = json_decode($_POST["packagedata"]);
-
             $apdate = $caredate . ' ' . $caretime;
             $packagedata[0]->appointment_date = $apdate;
             $packagedata = json_encode($packagedata);
@@ -2635,9 +2641,9 @@ if (isset($_POST["inserttocare"])) {
     } else {
         $packagedata = "None";
     }
-    $require_attachment = cleanInput($_POST["require_attachment"]);
-    $caresql = "INSERT INTO care (caredate, caretime, patientname, patientproblem, patientaddress, addresslandmark, requesterid, lat, lng, request_status, sp_id, caretype, fullname, noic, knownillness, careprice, caretypeori, packages_data, require_attachment, careid)
-		VALUES ('$caredate', '$caretime', '$patientname', '$patientproblem', '$patientaddress', '$addresslandmark', '$requesterid', '$lat', '$lng', '$request_status', '$doc_id', '$caretype', '$fullname', '$noic', '$knownillness', '$careprice', '$caretypeori', '$packagedata', '$require_attachment', '$careid')";
+
+    $caresql = "INSERT INTO care (caredate, caretime, patientname, patientproblem, patientaddress, addresslandmark, requesterid, lat, lng, request_status, sp_id, caretype, fullname, noic, knownillness, careprice, caretypeori, packages_data, require_attachment, careid, attachments,teleid)
+		VALUES ('$caredate', '$caretime', '$patientname', '$patientproblem', '$patientaddress', '$addresslandmark', '$requesterid', '$lat', '$lng', '$request_status', '$doc_id', '$caretype', '$fullname', '$noic', '$knownillness', '$careprice', '$caretypeori', '$packagedata', '$require_attachment', '$careid' ,'none', 0)";
 
     if ($db->query($caresql) === TRUE) {
         $last_id = $db->insert_id;
@@ -4863,7 +4869,7 @@ if (isset($_POST["requesttopupsession"])) {
 
 if (isset($_POST["topUpHistory"])) {
     $userid = $authUser["id"];
-    $sql = "SELECT * FROM senangpay WHERE user_id= 29";
+    $sql = "SELECT * FROM senangpay WHERE user_id=".$userid;
     $result = $db->query($sql);
     if ($result->num_rows > 0) {
         $row = $result->fetch_all(MYSQLI_ASSOC);
